@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Stiverna Super Sahifa 🎧</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #000428, #004e92);
+      margin: 0;
+      padding: 0;
+      color: #f1f1f1;
+    }
+    h1 {
+      text-align: center;
+      padding: 20px;
+      background-color: #0e0e52;
+      margin: 0;
+      font-size: 28px;
+      color: #ffcc00;
+    }
+    .lang-select {
+      text-align: center;
+      margin-top: 10px;
+    }
+    select {
+      padding: 6px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 5px;
+    }
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+    .section h2 {
+      color: #f9f9f9;
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+    input[type="text"], input[type="file"] {
+      padding: 12px;
+      width: 80%;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin: 8px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #ff5733;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff2e00;
+    }
+    iframe, audio, img {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 12px;
+    }
+    .card {
+      background: #ffffff10;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .card img {
+      max-width: 100px;
+      border-radius: 10px;
+      float: left;
+      margin-right: 15px;
+    }
+    .card audio {
+      margin-top: 10px;
+    }
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    a {
+      color: #00ffd0;
+    }
+  </style>
+</head>
+<body>
+
+<h1 id="pageTitle">🎶 Stiverna: Multifunksional Super Sahifa</h1>
+<div class="lang-select">
+  <label for="langSelect">🌍 Tilni tanlang:</label>
+  <select id="langSelect" onchange="changeLanguage()">
+    <option value="uz">🇺🇿 O‘zbek</option>
+    <option value="en">🇺🇸 English</option>
+  </select>
+</div>
+
+<div class="section">
+  <h2 id="ytTitle">📺 YouTube qidiruvi</h2>
+  <input type="text" id="ytInput" placeholder="Qo‘shiq yoki video nomi">
+  <button onclick="searchYouTube()" id="ytBtn">Qidirish</button>
+  <div id="ytResults"></div>
+</div>
+
+<div class="section">
+  <h2 id="itunesTitle">🎵 iTunes musiqa qidiruvi</h2>
+  <input type="text" id="itunesInput" placeholder="Qo‘shiq yoki artist nomi">
+  <button onclick="searchiTunes()" id="itunesBtn">Qidirish</button>
+  <div id="itunesResults"></div>
+</div>
+
+<div class="section">
+  <h2 id="speakTitle">🗣 Matnni ovozda o‘qitish</h2>
+  <input type="text" id="readText" value="Assalomu alaykum, Diyorbek!">
+  <button onclick="readAloud()" id="readBtn">🔊 O‘qitish</button>
+</div>
+
+<div class="section">
+  <h2 id="audioTitle">📂 Musiqa yuklab eshiting</h2>
+  <input type="file" accept="audio/*" onchange="loadAudio(event)">
+  <audio id="audioPlayer" controls></audio>
+</div>
+
+<div class="section">
+  <h2 id="imgTitle">🖼 Rasm yuklash</h2>
+  <input type="file" accept="image/*" onchange="loadImage(event)">
+  <img id="imagePreview" style="display:none;" />
+</div>
+
+<script>
+function changeLanguage() {
+  const lang = document.getElementById("langSelect").value;
+  const dict = {
+    uz: {
+      pageTitle: "🎶 Stiverna: Multifunksional Super Sahifa",
+      ytTitle: "📺 YouTube qidiruvi",
+      ytBtn: "Qidirish",
+      itunesTitle: "🎵 iTunes musiqa qidiruvi",
+      itunesBtn: "Qidirish",
+      speakTitle: "🗣 Matnni ovozda o‘qitish",
+      readBtn: "🔊 O‘qitish",
+      audioTitle: "📂 Musiqa yuklab eshiting",
+      imgTitle: "🖼 Rasm yuklash"
+    },
+    en: {
+      pageTitle: "🎶 Stiverna: Multifunctional Super Page",
+      ytTitle: "📺 YouTube Search",
+      ytBtn: "Search",
+      itunesTitle: "🎵 iTunes Music Search",
+      itunesBtn: "Search",
+      speakTitle: "🗣 Read text aloud",
+      readBtn: "🔊 Read",
+      audioTitle: "📂 Upload and play music",
+      imgTitle: "🖼 Upload image"
+    }
+  };
+  const d = dict[lang];
+  for (let id in d) {
+    document.getElementById(id).innerText = d[id];
+  }
+}
+
+function searchYouTube() {
+  const q = document.getElementById("ytInput").value.trim();
+  if (!q) return alert("Qidiruv matnini yozing.");
+  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+  document.getElementById("ytResults").innerHTML =
+    `<p><a href="${url}" target="_blank">▶️ YouTube’da ko‘rish</a></p>`;
+}
+
+async function searchiTunes() {
+  const query = document.getElementById("itunesInput").value.trim();
+  if (!query) return alert("Qidiruv matnini yozing.");
+  const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=6`);
+  const data = await res.json();
+  let html = "";
+  data.results.forEach(item => {
+    html += `
+      <div class="card clearfix">
+        <img src="${item.artworkUrl100}">
+        <strong>${item.trackName}</strong><br>${item.artistName}<br>
+        <audio controls src="${item.previewUrl}"></audio><br>
+        <a href="${item.trackViewUrl}" target="_blank">iTunes sahifasi</a>
+      </div>`;
+  });
+  document.getElementById("itunesResults").innerHTML = html;
+}
+
+function readAloud() {
+  const txt = document.getElementById("readText").value;
+  const utter = new SpeechSynthesisUtterance(txt);
+  utter.lang = "uz-UZ";
+  window.speechSynthesis.speak(utter);
+}
+
+function loadAudio(e) {
+  const url = URL.createObjectURL(e.target.files[0]);
+  document.getElementById("audioPlayer").src = url;
+}
+
+function loadImage(e) {
+  const url = URL.createObjectURL(e.target.files[0]);
+  const img = document.getElementById("imagePreview");
+  img.src = url;
+  img.style.display = "block";
+}
+</script>
+
+</body>
+</html>
