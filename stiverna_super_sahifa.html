@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -93,6 +92,26 @@
     a {
       color: #00ffd0;
     }
+
+    /* Mobilga moslashtirish */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 22px;
+        padding: 15px;
+      }
+      .section {
+        padding: 15px;
+        margin: 10px;
+      }
+      input[type="text"], input[type="file"], button {
+        width: 100%;
+        font-size: 14px;
+      }
+      .card img {
+        max-width: 80px;
+        margin-right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -174,9 +193,9 @@ function changeLanguage() {
 function searchYouTube() {
   const q = document.getElementById("ytInput").value.trim();
   if (!q) return alert("Qidiruv matnini yozing.");
-  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+  const embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(q)}`;
   document.getElementById("ytResults").innerHTML =
-    `<p><a href="${url}" target="_blank">▶️ YouTube’da ko‘rish</a></p>`;
+    `<iframe src="${embedUrl}" height="300" allowfullscreen></iframe>`;
 }
 
 async function searchiTunes() {
@@ -185,37 +204,29 @@ async function searchiTunes() {
   const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=6`);
   const data = await res.json();
   let html = "";
-  data.results.forEach(item => {
-    html += `
-      <div class="card clearfix">
-        <img src="${item.artworkUrl100}">
-        <strong>${item.trackName}</strong><br>${item.artistName}<br>
-        <audio controls src="${item.previewUrl}"></audio><br>
-        <a href="${item.trackViewUrl}" target="_blank">iTunes sahifasi</a>
-      </div>`;
-  });
+  if (data.results.length === 0) {
+    html = "<p>Natija topilmadi.</p>";
+  } else {
+    data.results.forEach(item => {
+      html += `
+        <div class="card clearfix">
+          <img src="${item.artworkUrl100}">
+          <strong>${item.trackName}</strong><br>${item.artistName}<br>
+          <audio controls src="${item.previewUrl}"></audio><br>
+          <a href="${item.trackViewUrl}" target="_blank">iTunes sahifasi</a>
+        </div>`;
+    });
+  }
   document.getElementById("itunesResults").innerHTML = html;
 }
 
 function readAloud() {
   const txt = document.getElementById("readText").value;
+  const lang = document.getElementById("langSelect").value;
   const utter = new SpeechSynthesisUtterance(txt);
-  utter.lang = "uz-UZ";
+  utter.lang = lang === "uz" ? "uz-UZ" : "en-US";
   window.speechSynthesis.speak(utter);
 }
 
 function loadAudio(e) {
-  const url = URL.createObjectURL(e.target.files[0]);
-  document.getElementById("audioPlayer").src = url;
-}
-
-function loadImage(e) {
-  const url = URL.createObjectURL(e.target.files[0]);
-  const img = document.getElementById("imagePreview");
-  img.src = url;
-  img.style.display = "block";
-}
-</script>
-
-</body>
-</html>
+  const url = URL.createObjectURL(e.target.files
